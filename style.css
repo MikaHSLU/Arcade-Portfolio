@@ -41,15 +41,15 @@ body {
 /* Back / Return Button */
 .btn-back {
   position: absolute;
-  top: 18px;
-  left: 20px;
-  z-index: 30;
-  padding: 10px 16px;
+  top: 14px;
+  left: 18px;
+  z-index: 40;
+  padding: 8px 14px;
   font-family: 'Press Start 2P', monospace;
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   color: var(--neon-cyan);
   border: 2px solid var(--neon-cyan);
-  background: rgba(0, 255, 255, 0.1);
+  background: rgba(5, 5, 8, 0.85);
   cursor: pointer;
   display: none;
   letter-spacing: 1px;
@@ -76,12 +76,12 @@ body {
   display: none;
   flex-direction: column;
   gap: 8px;
-  max-width: 230px;
+  max-width: 220px;
   pointer-events: auto;
 }
 
 .mobile-menu-item {
-  background: rgba(5, 5, 8, 0.88);
+  background: rgba(5, 5, 8, 0.9);
   border: 2px solid var(--neon-cyan);
   color: var(--neon-cyan);
   padding: 6px 10px;
@@ -116,9 +116,8 @@ body {
   display: none;
   opacity: 1;
   pointer-events: none;
-  padding: 68px 24px 20px 24px;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  padding: 58px 20px 20px 20px;
+  overflow: hidden;
   box-sizing: border-box;
   font-family: 'Press Start 2P', monospace;
   color: var(--neon-cyan);
@@ -137,24 +136,26 @@ body {
 /* Two-Column Grid */
 .project-modal-grid {
   display: grid;
-  grid-template-columns: minmax(320px, 1fr) 1.55fr;
-  gap: 24px;
+  grid-template-columns: minmax(320px, 1fr) 1.5fr;
+  gap: 20px;
   width: 100%;
   max-width: 100%;
   height: 100%;
   opacity: 0;
 }
 
-/* Left Stack */
+/* Left Stack with Dedicated Scroll Buffer */
 .project-left-col {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
   height: 100%;
-  overflow-y: auto;
+  overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
-  padding-right: 6px;
+  padding-right: 8px;
+  padding-bottom: 90px; /* Essential bottom buffer so content never gets cut off */
   touch-action: pan-y;
+  overscroll-behavior: contain;
 }
 
 .project-left-col::-webkit-scrollbar {
@@ -167,30 +168,31 @@ body {
 .project-card {
   border: 2px solid var(--neon-cyan);
   background: rgba(0, 255, 255, 0.04);
-  padding: 16px 20px;
-  box-shadow: 0 0 12px rgba(0, 255, 255, 0.12);
+  padding: 16px 18px;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.12);
+  flex-shrink: 0;
 }
 
 .project-card-title {
   font-family: 'VT323', monospace;
-  font-size: clamp(2.2rem, 3.8vw, 3.4rem);
+  font-size: clamp(2rem, 3.5vw, 3.2rem);
   color: var(--neon-orange);
   text-shadow: 0 0 12px rgba(255, 119, 0, 0.6);
   margin: 0;
-  line-height: 1.1;
+  line-height: 1.05;
   letter-spacing: 2px;
 }
 
 .project-card-desc {
   font-family: 'VT323', monospace;
-  font-size: 1.65rem;
+  font-size: 1.55rem;
   line-height: 1.35;
   color: #f0ece1;
 }
 
 .project-card-tags-header,
 .project-card-links-header {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   color: var(--neon-green);
   margin-bottom: 10px;
   letter-spacing: 1px;
@@ -204,17 +206,17 @@ body {
 
 .project-tag {
   font-family: 'Press Start 2P', monospace;
-  font-size: 0.62rem;
+  font-size: 0.6rem;
   background: rgba(57, 255, 20, 0.12);
   color: var(--neon-green);
   border: 1px solid var(--neon-green);
-  padding: 6px 10px;
+  padding: 5px 8px;
 }
 
 .project-links-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .project-ext-link {
@@ -232,6 +234,19 @@ body {
   transform: translateX(8px);
 }
 
+.project-coming-soon {
+  font-family: 'VT323', monospace;
+  font-size: 1.55rem;
+  color: #888888;
+  letter-spacing: 2px;
+}
+
+.scroll-buffer-spacer {
+  height: 40px;
+  flex-shrink: 0;
+  width: 100%;
+}
+
 /* Right Column (Video) - Fully visible letterboxed display */
 .project-right-col {
   border: 2px solid var(--neon-orange);
@@ -242,13 +257,13 @@ body {
   height: 100%;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 0 18px rgba(255, 119, 0, 0.25);
+  box-shadow: 0 0 16px rgba(255, 119, 0, 0.25);
 }
 
 .project-video-element {
   width: 100%;
   height: 100%;
-  object-fit: contain !important; /* Prevents video cropping */
+  object-fit: contain !important;
   background: #000;
   display: block;
 }
@@ -258,30 +273,34 @@ body {
   opacity: 0;
   max-width: 900px;
   width: 100%;
+  max-height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 50px;
 }
 
 .detail-header {
   font-family: 'VT323', monospace;
-  font-size: clamp(2.8rem, 5vw, 4.4rem);
+  font-size: clamp(2.6rem, 5vw, 4.2rem);
   color: var(--neon-orange);
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   text-shadow: 0 0 14px rgba(255, 119, 0, 0.6);
   letter-spacing: 2px;
 }
 
 .detail-body {
   font-family: 'VT323', monospace;
-  font-size: 1.85rem;
-  line-height: 1.5;
+  font-size: 1.75rem;
+  line-height: 1.45;
   color: #f0ece1;
 }
 
 .social-link-item {
   display: block;
-  margin: 16px 0;
+  margin: 14px 0;
   color: var(--neon-green);
   text-decoration: none;
-  font-size: 2rem;
+  font-size: 1.9rem;
   touch-action: manipulation;
   transition: transform 0.2s ease, color 0.2s ease;
 }
@@ -295,10 +314,10 @@ body {
 /* Pinned Showcase HUD */
 #showcase-hud {
   position: fixed;
-  top: 28px;
-  right: 32px;
+  top: 24px;
+  right: 28px;
   z-index: 25;
-  max-width: 480px;
+  max-width: 440px;
   text-align: right;
   pointer-events: none;
   display: none;
@@ -312,25 +331,25 @@ body {
 
 .showcase-hud-title {
   font-family: 'VT323', monospace;
-  font-size: 2.6rem;
+  font-size: 2.4rem;
   line-height: 1.1;
   color: var(--neon-orange);
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   text-shadow: 0 0 10px rgba(255, 119, 0, 0.4);
   letter-spacing: 2px;
 }
 
 .showcase-hud-desc {
   font-family: 'VT323', monospace;
-  font-size: 1.65rem;
-  line-height: 1.3;
+  font-size: 1.55rem;
+  line-height: 1.25;
   color: #f0ece1;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .showcase-hud-tags {
   font-family: 'VT323', monospace;
-  font-size: 1.4rem;
+  font-size: 1.35rem;
   color: var(--neon-green);
   letter-spacing: 1px;
 }

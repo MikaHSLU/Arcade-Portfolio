@@ -52,7 +52,7 @@ const projects = [
     description: "Interactive visual website experimenting with capturing user hand gestures via webcam to allow drawing on the website with their fingers. Having little to no experience in web development, I took on the challenge with basic know-how and an AI-assisted approach. Combining Javascript, Google's MediaPipe Hand Tracking and a built-in AI chatbot, I created a unique interactive experience that allows users to draw and interact with the website in a creative way.",
     skills: ["Creative Coding", "Javascript", "HTML/CSS", "Interactive Design"],
     links: [
-      { label: "> DEMO VIDEO", url: "https://youtube.com" }
+      { label: "> COMING SOON", isComingSoon: true }
     ]
   },
   { 
@@ -98,6 +98,7 @@ projectDetailContainer.innerHTML = `
         <div class="project-card-links-header">[ EXTERNAL LINKS ]</div>
         <div id="proj-links" class="project-links-list"></div>
       </div>
+      <div class="scroll-buffer-spacer"></div>
     </div>
     <div class="project-right-col">
       <video id="proj-detail-video" class="project-video-element" loop muted playsinline webkit-playsinline></video>
@@ -107,6 +108,7 @@ projectDetailContainer.innerHTML = `
 document.body.appendChild(projectDetailContainer);
 
 const projectModalGrid = projectDetailContainer.querySelector('.project-modal-grid');
+const projLeftCol = projectDetailContainer.querySelector('.project-left-col');
 const projTitleElem = document.getElementById('proj-title');
 const projDescElem = document.getElementById('proj-desc');
 const projTagsElem = document.getElementById('proj-tags');
@@ -218,7 +220,7 @@ function updateResponsiveCamera() {
   if (aspect < BASE_ASPECT) {
     const scaleFactor = BASE_ASPECT / aspect;
     camera.position.set(
-      isTouchDevice ? -2.2 : baseCameraPos.x * (aspect < 1 ? 0.6 : 1),
+      isTouchDevice ? -2.0 : baseCameraPos.x * (aspect < 1 ? 0.6 : 1),
       baseCameraPos.y * Math.min(scaleFactor * 0.9, 1.4),
       baseCameraPos.z * Math.min(scaleFactor, 1.8)
     );
@@ -658,7 +660,6 @@ gltfLoader.load(
       }
     });
 
-    // Only instantiate 3D cassette labels on desktop
     if (!isTouchDevice) {
       document.fonts.ready.then(() => {
         const skewDegrees = 0.8;
@@ -744,7 +745,12 @@ function triggerZoomMain(projectId = 0) {
   if (selectedProj.links && selectedProj.links.length > 0) {
     projLinksCard.style.display = 'block';
     projLinksElem.innerHTML = selectedProj.links
-      .map(link => `<a href="${link.url}" target="_blank" class="project-ext-link">${link.label}</a>`)
+      .map(link => {
+        if (link.isComingSoon) {
+          return `<span class="project-coming-soon">${link.label}</span>`;
+        }
+        return `<a href="${link.url}" target="_blank" class="project-ext-link">${link.label}</a>`;
+      })
       .join('');
   } else {
     projLinksCard.style.display = 'none';
@@ -753,6 +759,9 @@ function triggerZoomMain(projectId = 0) {
   projDetailVideo.src = selectedProj.video;
   projDetailVideo.currentTime = 0;
   projDetailVideo.play().catch(() => {});
+
+  // Reset scroll to top upon opening modal
+  projLeftCol.scrollTop = 0;
 
   textMeshes.forEach(m => gsap.to(m.material, { opacity: 0, duration: 0.35 }));
   allScreenMeshes.forEach(s => { s.userData.targetIntensity = 0.0; });
