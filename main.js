@@ -68,13 +68,13 @@ const projects = [
 ];
 
 const socials = [
-  { label: "> INSTAGRAM", url: "https://www.instagram.com/pxe_ls?stkn=MTl3dXBva2poZWdxaw==" },
+  { label: "> INSTAGRAM", url: "https://instagram.com" },
   { label: "> LINKEDIN", url: "https://www.linkedin.com/in/mikaeljed-cruz/" },
   { label: "> EMAIL", url: "mailto:mikaeljed.cruz@outlook.com" }
 ];
 
 // =========================================================================
-// 2. OVERLAY CONTAINERS (DOM INJECTION)
+// 2. OVERLAY CONTAINERS & MOBILE PROJECT MENU
 // =========================================================================
 
 // A. Project Detail Overlay
@@ -137,7 +137,7 @@ aboutDetailContainer.innerHTML = `
   <div class="detail-content">
     <h1 class="detail-header">[ ABOUT ME ]</h1>
     <div class="detail-body">
-     An aspiring game developer, 3D artist and interactive designer with a passion for creating immersive experiences. I enjoy exploring the intersection of art and technology, and I'm always looking for new challenges to push my skills further, with the mindset that if it's a skill I cannot do, it's a skill I can learn. My goal is to craft engaging and memorable experiences that resonate with players and users alike, so let's grab a coffee and chat about your next project!
+     An aspiring game developer, 3D artist and interactive designer with a passion for creating immersive experiences. I enjoy exploring the intersection of art and technology, and I'm always looking for new challenges to push my skills further. My goal is to craft engaging and memorable experiences that resonate with players and users alike, by all means necessary. Because if there is a skill I cannot do, its a skill I can learn.
     </div>
   </div>
 `;
@@ -158,6 +158,33 @@ const showcaseHudTitle = document.getElementById('showcase-hud-title');
 const showcaseHudDesc = document.getElementById('showcase-hud-desc');
 const showcaseHudTags = document.getElementById('showcase-hud-tags');
 
+// E. Dedicated Left Project Menu for Mobile
+const mobileMenuContainer = document.createElement('div');
+mobileMenuContainer.id = 'mobile-project-menu';
+projects.forEach((proj) => {
+  const btn = document.createElement('button');
+  btn.className = 'mobile-menu-item';
+  btn.textContent = `> ${proj.title}`;
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (proj.id === 5) {
+      triggerShowcaseOverview();
+    } else {
+      triggerZoomMain(proj.id);
+    }
+  });
+  mobileMenuContainer.appendChild(btn);
+});
+document.body.appendChild(mobileMenuContainer);
+
+function syncMobileMenuVisibility() {
+  if (isTouchDevice && currentZoomMode === 'NONE') {
+    mobileMenuContainer.style.display = 'flex';
+  } else {
+    mobileMenuContainer.style.display = 'none';
+  }
+}
+
 // =========================================================================
 // 3. SCENE, CAMERA & RESPONSIVE RENDERING SETUP
 // =========================================================================
@@ -177,8 +204,7 @@ const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerH
 
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: "high-performance" });
 
-// Mobile GPU Throttle Prevention
-const PIXEL_FACTOR = isTouchDevice ? 0.38 : 0.5;
+const PIXEL_FACTOR = isTouchDevice ? 0.42 : 0.5;
 renderer.setSize(window.innerWidth / PIXEL_FACTOR, window.innerHeight / PIXEL_FACTOR, false);
 renderer.setPixelRatio(1);
 renderer.outputEncoding = THREE.sRGBEncoding;
@@ -191,12 +217,10 @@ function updateResponsiveCamera() {
 
   if (aspect < BASE_ASPECT) {
     const scaleFactor = BASE_ASPECT / aspect;
-    // Keep desk & cassette stack in frustum on portrait viewports
-    const xShift = aspect < 0.8 ? -4.2 : baseCameraPos.x * (aspect < 1 ? 0.6 : 1);
     camera.position.set(
-      xShift,
-      baseCameraPos.y * Math.min(scaleFactor * 0.85, 1.6),
-      baseCameraPos.z * Math.min(scaleFactor * 1.15, 2.3)
+      isTouchDevice ? -2.2 : baseCameraPos.x * (aspect < 1 ? 0.6 : 1),
+      baseCameraPos.y * Math.min(scaleFactor * 0.9, 1.4),
+      baseCameraPos.z * Math.min(scaleFactor, 1.8)
     );
   } else {
     camera.position.copy(baseCameraPos);
@@ -205,7 +229,6 @@ function updateResponsiveCamera() {
 }
 updateResponsiveCamera();
 
-// --- Shadow Map Setup ---
 renderer.shadowMap.enabled = !isTouchDevice;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
@@ -271,21 +294,10 @@ aboutVideoTexture.flipY = false;
 aboutVideoTexture.center.set(0.5, 0.5);
 aboutVideoElement.play().catch(() => {});
 
-// Unlock mobile video autoplay on first interaction
 window.addEventListener('pointerdown', () => {
   if (videoElement.paused) videoElement.play().catch(() => {});
   if (socialsVideoElement.paused) socialsVideoElement.play().catch(() => {});
   if (aboutVideoElement.paused) aboutVideoElement.play().catch(() => {});
-}, { once: true });
-
-// Attempt native screen orientation lock to landscape on Android / supported devices
-window.addEventListener('pointerdown', () => {
-  if (screen.orientation && screen.orientation.lock) {
-    screen.orientation.lock('landscape').catch(() => {
-      // Browsers will safely reject this if not in fullscreen or on iOS Safari,
-      // where the CSS orientation-blocker takes over instead.
-    });
-  }
 }, { once: true });
 
 function switchVideoPreview(targetSrc) {
@@ -482,7 +494,7 @@ function createScreenMaterial() {
   });
 }
 
-// --- 7. Hand-Drawn Scribble Text Generation ---
+// --- 7. Hand-Drawn Scribble Text Generation (Desktop) ---
 function drawScribbleFrame(ctx, text, isHovered, frameSeed) {
   const w = ctx.canvas.width;
   const h = ctx.canvas.height;
@@ -532,8 +544,7 @@ function drawScribbleFrame(ctx, text, isHovered, frameSeed) {
   ctx.stroke();
 }
 
-// Expand cassette hit geometry on touch devices
-const labelGeo = new THREE.PlaneGeometry(isTouchDevice ? 2.5 : 2.1, isTouchDevice ? 0.65 : 0.52);
+const labelGeo = new THREE.PlaneGeometry(2.1, 0.52);
 
 function createScribbleMesh(text, id) {
   const canvasElem = document.createElement('canvas');
@@ -647,39 +658,43 @@ gltfLoader.load(
       }
     });
 
-    document.fonts.ready.then(() => {
-      const skewDegrees = 0.8;
+    // Only instantiate 3D cassette labels on desktop
+    if (!isTouchDevice) {
+      document.fonts.ready.then(() => {
+        const skewDegrees = 0.8;
 
-      projects.forEach((proj, idx) => {
-        const mesh = createScribbleMesh(proj.title, proj.id);
-        const initialPos = defaultTapeCoordinates[idx].clone();
+        projects.forEach((proj, idx) => {
+          const mesh = createScribbleMesh(proj.title, proj.id);
+          const initialPos = defaultTapeCoordinates[idx].clone();
 
-        mesh.position.copy(initialPos);
-        mesh.rotation.y = 0.3;
-        mesh.rotation.z = THREE.MathUtils.degToRad(skewDegrees);
+          mesh.position.copy(initialPos);
+          mesh.rotation.y = 0.3;
+          mesh.rotation.z = THREE.MathUtils.degToRad(skewDegrees);
 
-        mesh.userData.baseY = initialPos.y;
+          mesh.userData.baseY = initialPos.y;
 
-        scene.add(mesh);
-        textMeshes.push(mesh);
-        interactableCassettes.push(mesh);
+          scene.add(mesh);
+          textMeshes.push(mesh);
+          interactableCassettes.push(mesh);
 
-        drawScribbleFrame(mesh.userData.ctx, mesh.userData.title, false, mesh.userData.seed);
-        mesh.userData.texture.needsUpdate = true;
+          drawScribbleFrame(mesh.userData.ctx, mesh.userData.title, false, mesh.userData.seed);
+          mesh.userData.texture.needsUpdate = true;
+        });
       });
-    });
+    }
+
+    syncMobileMenuVisibility();
   },
   undefined,
   (error) => console.error('GLTF Load Error:', error)
 );
 
 // =========================================================================
-// 9. RAYCASTING, HOVER & TWO-TAP TOUCH TRANSITIONS
+// 9. RAYCASTING, HOVER & ZOOM TRANSITIONS
 // =========================================================================
 const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2();
 let hoveredProjectId = -1;
-let selectedMobileProjectId = -1;
 let currentZoomMode = 'NONE';
 let showcaseTween = null;
 
@@ -711,6 +726,7 @@ function triggerZoomMain(projectId = 0) {
   if (currentZoomMode === 'MAIN' || !tvGroup) return;
   currentZoomMode = 'MAIN';
   backBtn.style.display = 'block';
+  syncMobileMenuVisibility();
 
   if (isTouchDevice) {
     socialsVideoElement.pause();
@@ -803,6 +819,7 @@ function triggerShowcaseOverview() {
   if (currentZoomMode === 'SHOWCASE' || !tvGroup) return;
   currentZoomMode = 'SHOWCASE';
   backBtn.style.display = 'block';
+  syncMobileMenuVisibility();
 
   const mikaProj = projects.find(p => p.id === 5);
   if (mikaProj) {
@@ -862,6 +879,7 @@ function triggerZoomTopMonitor() {
   if (currentZoomMode === 'TOP' || !topMonitorHitbox) return;
   currentZoomMode = 'TOP';
   backBtn.style.display = 'block';
+  syncMobileMenuVisibility();
 
   if (isTouchDevice) aboutVideoElement.pause();
 
@@ -931,6 +949,7 @@ function triggerZoomAboutMonitor() {
   if (currentZoomMode === 'ABOUT' || !aboutMonitorHitbox) return;
   currentZoomMode = 'ABOUT';
   backBtn.style.display = 'block';
+  syncMobileMenuVisibility();
 
   if (isTouchDevice) socialsVideoElement.pause();
 
@@ -1023,7 +1042,6 @@ function handlePreviewSwitch(pId) {
 
 function resetPreview() {
   hoveredProjectId = -1;
-  selectedMobileProjectId = -1;
   switchVideoPreview(MAIN_MENU_VIDEO);
 
   const activeMaterial = allScreenMeshes[0]?.material;
@@ -1094,7 +1112,7 @@ if (!isTouchDevice) {
   });
 }
 
-// Click & Tap Interaction Handler (Two-tap logic for Mobile)
+// Click & Tap Interaction Handler
 window.addEventListener('pointerup', (e) => {
   if (currentZoomMode !== 'NONE') return;
 
@@ -1108,24 +1126,15 @@ window.addEventListener('pointerup', (e) => {
   const aboutIntersects = raycaster.intersectObject(aboutMonitorHitbox, true);
   if (aboutIntersects.length > 0) return triggerZoomAboutMonitor();
 
-  const cassetteIntersects = raycaster.intersectObjects(interactableCassettes, true);
-  if (cassetteIntersects.length > 0) {
-    let target = cassetteIntersects[0].object;
-    while (target && target.userData?.projectId === undefined && target.parent) target = target.parent;
-    const pId = target?.userData?.projectId ?? 0;
-
-    if (isTouchDevice) {
-      if (selectedMobileProjectId !== pId) {
-        selectedMobileProjectId = pId;
-        handlePreviewSwitch(pId);
-        return;
-      }
+  if (!isTouchDevice) {
+    const cassetteIntersects = raycaster.intersectObjects(interactableCassettes, true);
+    if (cassetteIntersects.length > 0) {
+      let target = cassetteIntersects[0].object;
+      while (target && target.userData?.projectId === undefined && target.parent) target = target.parent;
+      const pId = target?.userData?.projectId ?? 0;
+      if (pId === 5) return triggerShowcaseOverview();
+      return triggerZoomMain(pId);
     }
-
-    if (pId === 5) return triggerShowcaseOverview();
-    return triggerZoomMain(pId);
-  } else if (isTouchDevice && selectedMobileProjectId !== -1) {
-    resetPreview();
   }
 });
 
@@ -1208,6 +1217,7 @@ function handleReturn() {
 
   textMeshes.forEach(m => gsap.to(m.material, { opacity: 1, duration: 0.5 }));
   resetPreview();
+  syncMobileMenuVisibility();
 
   updateResponsiveCamera();
   const targetX = camera.position.x;
@@ -1251,9 +1261,9 @@ window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
   }
+  syncMobileMenuVisibility();
 });
 
-// Pause loops on backgrounding
 document.addEventListener('visibilitychange', () => {
   const isHidden = document.visibilityState === 'hidden';
   if (isHidden) {
@@ -1280,7 +1290,7 @@ function animate() {
   const shouldRedraw = boilTimer > 0.125;
   if (shouldRedraw) boilTimer = 0;
 
-  if (currentZoomMode === 'NONE') {
+  if (currentZoomMode === 'NONE' && !isTouchDevice) {
     textMeshes.forEach((mesh) => {
       if (shouldRedraw) {
         mesh.userData.seed += 13;
