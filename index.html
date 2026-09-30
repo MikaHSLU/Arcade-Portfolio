@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Portfolio // Arcade OS</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <button id="back-btn" class="btn-back">ESC // RETURN</button>
+
+  <video id="tv-video" loop muted playsinline webkit-playsinline crossorigin="anonymous" style="display: none;"></video>
+
+  <canvas id="webgl-canvas"></canvas>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+  
+  <script src="main.js"></script>
+
+  <!-- Orientation Lock Overlay for Mobile -->
+<div id="orientation-blocker" class="orientation-blocker">
+  <div class="orientation-content">
+    <div class="rotate-icon">↺</div>
+    <div class="rotate-title">[ SYSTEM NOTICE ]</div>
+    <div class="rotate-text">ROTATE DEVICE TO LANDSCAPE FOR OPTIMAL ARCADE OS EXPERIENCE</div>
+  </div>
+</div>
+
+</body>
+</html>
