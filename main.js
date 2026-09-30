@@ -282,7 +282,6 @@ socialsVideoTexture.magFilter = THREE.NearestFilter;
 socialsVideoTexture.format = THREE.RGBAFormat;
 socialsVideoTexture.flipY = false;
 socialsVideoTexture.wrapS = THREE.RepeatWrapping;
-socialsVideoTexture.wrapT = THREE.RepeatWrapping;
 socialsVideoTexture.repeat.x = -1;
 socialsVideoTexture.center.set(0.5, 0.5);
 socialsVideoElement.play().catch(() => {});
@@ -331,13 +330,14 @@ screenGlowLight.position.set(0, 1.2, 1.5);
 scene.add(screenGlowLight);
 
 // =========================================================================
-// 6. SHADER MASKS & HITBOX CALIBRATION
+// 6. SHADER MASKS & EXPANDED HITBOX CALIBRATION
 // =========================================================================
 const DEBUG_TOP_HITBOX_POS = new THREE.Vector3(-5.95, 5.70, 1.0);
-const DEBUG_TOP_HITBOX_SIZE = { width: 2.2, height: 2.2, depth: 1.4 };
+const DEBUG_TOP_HITBOX_SIZE = { width: 2.5, height: 2.5, depth: 2.2 };
 
-const DEBUG_ABOUT_HITBOX_POS = new THREE.Vector3(0.0, 1.50, 1.5); 
-const DEBUG_ABOUT_HITBOX_SIZE = { width: 2.2, height: 2.2, depth: 1.4 };
+// Generously enlarged hitbox bounds to guarantee instant single-tap on mobile screens
+const DEBUG_ABOUT_HITBOX_POS = new THREE.Vector3(0.0, 1.50, 1.6); 
+const DEBUG_ABOUT_HITBOX_SIZE = { width: 2.8, height: 2.8, depth: 2.6 };
 
 const ABOUT_X_THRESHOLD = -1.35;
 
@@ -524,8 +524,8 @@ function drawScribbleFrame(ctx, text, isHovered, frameSeed) {
   ctx.beginPath();
   ctx.moveTo(padX + rnd() * 3, padY + rnd() * 2);
   ctx.lineTo(w - padX + rnd() * 3, padY + rnd() * 2);
-  ctx.lineTo(w - padX + rnd() * 3, h - padY + rnd() * 2);
-  ctx.lineTo(padX + rnd() * 3, h - padY + rnd() * 2);
+  ctx.lineTo(w - padX + rnd() * 3, h - padY + rnd() * 3);
+  ctx.lineTo(padX + rnd() * 3, h - padY + rnd() * 3);
   ctx.closePath();
   ctx.stroke();
 
@@ -760,7 +760,6 @@ function triggerZoomMain(projectId = 0) {
   projDetailVideo.currentTime = 0;
   projDetailVideo.play().catch(() => {});
 
-  // Reset scroll to top upon opening modal
   projLeftCol.scrollTop = 0;
 
   textMeshes.forEach(m => gsap.to(m.material, { opacity: 0, duration: 0.35 }));
@@ -1121,20 +1120,29 @@ if (!isTouchDevice) {
   });
 }
 
-// Click & Tap Interaction Handler
-window.addEventListener('pointerup', (e) => {
+// Unified Primary Tap Handler (Prioritizes direct single-tap on mobile)
+function handlePrimaryTap(clientX, clientY) {
   if (currentZoomMode !== 'NONE') return;
 
-  pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
-  pointer.y = -(e.clientY / window.innerHeight) * 2 + 1;
+  pointer.x = (clientX / window.innerWidth) * 2 - 1;
+  pointer.y = -(clientY / window.innerHeight) * 2 + 1;
   raycaster.setFromCamera(pointer, camera);
 
-  const topIntersects = raycaster.intersectObject(topMonitorHitbox, true);
-  if (topIntersects.length > 0) return triggerZoomTopMonitor();
-
+  // 1. Check About Monitor Hitbox first
   const aboutIntersects = raycaster.intersectObject(aboutMonitorHitbox, true);
-  if (aboutIntersects.length > 0) return triggerZoomAboutMonitor();
+  if (aboutIntersects.length > 0) {
+    triggerZoomAboutMonitor();
+    return;
+  }
 
+  // 2. Check Socials Hitbox
+  const topIntersects = raycaster.intersectObject(topMonitorHitbox, true);
+  if (topIntersects.length > 0) {
+    triggerZoomTopMonitor();
+    return;
+  }
+
+  // 3. Desktop cassette selection
   if (!isTouchDevice) {
     const cassetteIntersects = raycaster.intersectObjects(interactableCassettes, true);
     if (cassetteIntersects.length > 0) {
@@ -1145,7 +1153,21 @@ window.addEventListener('pointerup', (e) => {
       return triggerZoomMain(pId);
     }
   }
+}
+
+window.addEventListener('pointerup', (e) => {
+  handlePrimaryTap(e.clientX, e.clientY);
 });
+
+// Direct touch binding for mobile browsers
+if (isTouchDevice) {
+  window.addEventListener('touchend', (e) => {
+    if (e.changedTouches && e.changedTouches.length > 0) {
+      const touch = e.changedTouches[0];
+      handlePrimaryTap(touch.clientX, touch.clientY);
+    }
+  }, { passive: true });
+}
 
 // Reusable Exit / Collapse Transition
 function handleReturn() {
