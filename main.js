@@ -137,7 +137,7 @@ aboutDetailContainer.innerHTML = `
   <div class="detail-content">
     <h1 class="detail-header">[ ABOUT ME ]</h1>
     <div class="detail-body">
-     An aspiring game developer, 3D artist and interactive designer with a passion for creating immersive experiences. I enjoy exploring the intersection of art and technology, and I'm always looking for new challenges to push my skills further. My goal is to craft engaging and memorable experiences that resonate with players and users alike, by all means necessary. Because if there is a skill I cannot do, its a skill I can learn.
+     An aspiring game developer, 3D artist and interactive designer with a passion for creating immersive experiences. I enjoy exploring the intersection of art and technology, and I'm always looking for new challenges to push my skills further, with the mindset that if it's a skill I cannot do, it's a skill I can learn. My goal is to craft engaging and memorable experiences that resonate with players and users alike, so let's grab a coffee and chat about your next project!
     </div>
   </div>
 `;
