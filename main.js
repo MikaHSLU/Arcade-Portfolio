@@ -68,7 +68,7 @@ const projects = [
 ];
 
 const socials = [
-  { label: "> INSTAGRAM", url: "https://instagram.com" },
+  { label: "> INSTAGRAM", url: "https://www.instagram.com/pxe_ls?stkn=MTl3dXBva2poZWdxaw==" },
   { label: "> LINKEDIN", url: "https://www.linkedin.com/in/mikaeljed-cruz/" },
   { label: "> EMAIL", url: "mailto:mikaeljed.cruz@outlook.com" }
 ];
