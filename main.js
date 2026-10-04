@@ -68,7 +68,7 @@ const projects = [
 ];
 
 const socials = [
-  { label: "> INSTAGRAM", url: "https://instagram.com" },
+  { label: "> INSTAGRAM", url: "https://www.instagram.com/pxe_ls?stkn=MTl3dXBva2poZWdxaw==" },
   { label: "> LINKEDIN", url: "https://www.linkedin.com/in/mikaeljed-cruz/" },
   { label: "> EMAIL", url: "mailto:mikaeljed.cruz@outlook.com" }
 ];
@@ -139,7 +139,7 @@ aboutDetailContainer.innerHTML = `
   <div class="detail-content">
     <h1 class="detail-header">[ ABOUT ME ]</h1>
     <div class="detail-body">
-     An aspiring game developer, 3D artist and interactive designer with a passion for creating immersive experiences. I enjoy exploring the intersection of art and technology, and I'm always looking for new challenges to push my skills further. My goal is to craft engaging and memorable experiences that resonate with players and users alike, by all means necessary. Because if there is a skill I cannot do, its a skill I can learn.
+     An aspiring game developer, 3D artist and interactive designer with a passion for creating immersive experiences. I enjoy exploring the intersection of art and technology, and I'm always looking for new challenges to push my skills further. My goal is to craft engaging and memorable experiences that resonate with players and users alike.
     </div>
   </div>
 `;
