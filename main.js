@@ -139,7 +139,7 @@ aboutDetailContainer.innerHTML = `
   <div class="detail-content">
     <h1 class="detail-header">[ ABOUT ME ]</h1>
     <div class="detail-body">
-     An aspiring game developer, 3D artist and interactive designer with a passion for creating immersive experiences. I enjoy exploring the intersection of art and technology, and I'm always looking for new challenges to push my skills further. My goal is to craft engaging and memorable experiences that resonate with players and users alike.
+    Hi! I am an interactive designer, 3D artist, and game developer operating at the boundary where engineering meets visual storytelling. Currently studying computer science with a focus on design, I bridge the gap between creative visual direction and robust code.   My work spans real-time 3D pipelines, physics-driven gameplay mechanics, custom shaders, and interactive web graphics. Whether building games in Unity, sculpting and rigging assets in Blender, or experimenting with generative visual algorithms in WebGL, my focus is on crafting responsive, tangible digital worlds.   Coming from a background in IT operations and infrastructure automation, I combine disciplined problem-solving and systems thinking with an obsession for aesthetic detail. My goal is simple: engineer immersive, memorable experiences that resonate with players and users alike.  
     </div>
   </div>
 `;
