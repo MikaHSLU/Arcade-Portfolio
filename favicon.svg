@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" shape-rendering="crispEdges">
+  <!-- Outer Glow / Background Drop Shadow -->
+  <rect x="8" y="52" width="48" height="6" fill="#000000" opacity="0.45" />
+
+  <!-- Joystick Base (Isometric Bevel) -->
+  <!-- Bottom base plate / rim shadow -->
+  <path d="M 6 42 L 32 56 L 58 42 L 58 46 L 32 60 L 6 46 Z" fill="#121118" />
+  
+  <!-- Right beveled face with neon pink ambient bounce light -->
+  <path d="M 32 56 L 58 42 L 58 36 L 32 50 Z" fill="#201a2c" />
+  <path d="M 32 54 L 56 41 L 56 42 L 32 55 Z" fill="#ff00ff" opacity="0.35" />
+
+  <!-- Left beveled face (Shadowed) -->
+  <path d="M 6 42 L 32 56 L 32 50 L 6 36 Z" fill="#16151d" />
+
+  <!-- Base Top Face (Textured Charcoal/Black) -->
+  <path d="M 32 26 L 58 36 L 32 50 L 6 36 Z" fill="#26252f" />
+  <path d="M 32 28 L 56 36 L 32 48 L 8 36 Z" fill="#1e1d24" />
+
+  <!-- Red Action Button (Top-Left) -->
+  <ellipse cx="18" cy="34" rx="4" ry="2.2" fill="#ff3366" />
+  <ellipse cx="18" cy="33.2" rx="3.2" ry="1.6" fill="#ff6688" />
+
+  <!-- Rubber Collar / Ring Base -->
+  <ellipse cx="32" cy="40.5" rx="9" ry="4.5" fill="#111116" />
+  <ellipse cx="32" cy="39" rx="8" ry="3.8" fill="#2d2b38" />
+  <!-- Neon magenta highlight on collar rim -->
+  <path d="M 26 40 C 29 42.5 35 42.5 38 40 C 37 41.2 33 42 30 41 Z" fill="#ff00ff" />
+
+  <!-- Joystick Shaft / Cylinder -->
+  <rect x="29" y="10" width="6" height="27" fill="#15141b" />
+  <!-- Center Highlight / Specular Reflection -->
+  <rect x="31" y="9" width="1.5" height="28" fill="#4a475a" />
+  <!-- Cyan/White Specular Streak -->
+  <rect x="31" y="12" width="1" height="22" fill="#00ffff" opacity="0.75" />
+
+  <!-- Stick Top Cap -->
+  <ellipse cx="32" cy="9.5" rx="3" ry="1.6" fill="#3b3749" />
+  <ellipse cx="32" cy="9.2" rx="2" ry="0.9" fill="#75708a" />
+</svg>
