@@ -9,7 +9,7 @@ const projects = [
     id: 0, 
     title: "A GAME OF DICE", 
     video: "videos/proj1.mp4",
-    description: "A prototype of a roguelike 'dice battler' game. Players roll dice and load these as attacks in the chamber to deal damage to the enemy. I primarily worked on the UI/UX, 3D models such as the dice and background, as well as the implementation of the dice rolls, chamber system, and damage calculations in Unity. The challenge here was being able to create a prototype from scratch in a day, focussing on the development of thecore gameplay loop and its mechanics",
+    description: "A prototype of a roguelike 'dice battler' game. Players roll dice and load these as attacks in the chamber to deal damage to the enemy. I primarily worked on the UI/UX, 3D models such as the dice and background, as well as the implementation of the dice rolls, chamber system, and damage calculations in Unity. The challenge here was being able to create a prototype from scratch in a day, focussing on the development of the core gameplay loop and its mechanics. As of November 2027, this project is currently in active development as well, reach out and I'd love to show you the updates! :)",
     skills: ["Unity", "C#", "3D Modeling", "Game Design & Prototyping"],
     links: [
       { label: "> PLAY ON ITCH.IO", url: "https://mykacruz.itch.io/a-game-of-dice" }
